@@ -5,27 +5,26 @@ let height = getHeight();
 
 let margin = { top: 10, right: 30, bottom: 30, left: 80 };
 
-for (let index = 0; index < colors.length; index += 1) {
-	let svg = d3
-		.select(`#data${index}`)
-		.append('svg')
-		.attr('width', width - margin.left)
-		.attr('height', height - margin.top - margin.bottom)
-		.append('g')
-		.attr('transform', `translate(${margin.left}, ${margin.top})`);
-
-	let axleHeight = height * 0.8;
-	let axleWidth = width;
-	d3.csv(
-		'output',
-		function(d) {
-			return {
-				x : d3.timeParse('%a %d %b %H:%M:%S EAT %Y')(d.date),
-				y : [ d.download, d.upload, d.latency, d.loss ]
-			};
-		},
-		function(data) {
-			let x = d3.scaleTime().domain(d3.extent(data, (d) => d.x)).range([ 0, axleWidth ]);
+let axleHeight = height * 0.8;
+let axleWidth = width;
+d3.csv(
+	'output',
+	function(d) {
+		return {
+			x : d3.timeParse('%a %d %b %H:%M:%S EAT %Y')(d.date),
+			y : [ d.download, d.upload, d.latency, d.loss ]
+		};
+	},
+	function(data) {
+		let x = d3.scaleTime().domain(d3.extent(data, (d) => d.x)).range([ 0, axleWidth ]);
+		for (let index = 0; index < colors.length; index += 1) {
+			let svg = d3
+				.select(`#data${index}`)
+				.append('svg')
+				.attr('width', width - margin.left)
+				.attr('height', height - margin.top - margin.bottom)
+				.append('g')
+				.attr('transform', `translate(${margin.left}, ${margin.top})`);
 			svg.append('g').attr('transform', `translate(0, ${axleHeight})`).call(d3.axisBottom(x));
 
 			let timeLabelX = (axleWidth - margin.right - margin.left) / 2;
@@ -58,8 +57,8 @@ for (let index = 0; index < colors.length; index += 1) {
 				.style('text-anchor', 'middle')
 				.text(labels[index]);
 		}
-	);
-}
+	}
+);
 
 function getWidth() {
 	return Math.max(
