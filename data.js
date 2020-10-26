@@ -45,15 +45,18 @@ d3.csv(
 				.attr('stroke', colors[index])
 				.attr('stroke-width', 1.5)
 				.attr('d', d3.line().x((d) => x(d.x)).y((d) => y(d.y[index])));
-			
-			let average =  d3.mean(data, (d) => d.y[index])
+
+			let average = d3.mean(data, (d) => d.y[index]);
+			d3.select(`#metric${index}`).text(labels[index]);
+			d3.select(`#average${index}`).text(+average.toFixed(2));
+
 			svg
-			.append('path')
-			.datum(data)
-			.attr('fill', 'none')
-			.attr('stroke', 'red')
-			.attr('stroke-width', 3)
-			.attr('d', d3.line().x((d) => x(d.x)).y(y(average)));
+				.append('path')
+				.datum(data)
+				.attr('fill', 'none')
+				.attr('stroke', 'red')
+				.attr('stroke-width', 3)
+				.attr('d', d3.line().x((d) => x(d.x)).y(y(average)));
 
 			let labelX = 0 - axleHeight / 2;
 			let labelY = 0 - margin.left * 0.8;
